@@ -105,3 +105,20 @@ DELETE data from database
                                                 text: 'Something to do',
                                                 completed: false },
                                         ok: 1 }
+
+
+------------------------------------------------------------------------------------------------
+  UPDATE data from database
+------------------------------------------------------------------------------------------------
+* findOneAndUpdate - find item and returns changed document
+                    => findOneAndUpdate(filter, update_operators, some_configs)
+                    => 1. filter- query
+                       2. object-> mongoDB update operators:
+                        ---for example: $set- let us set fields value
+                                        db.collection('name_of_collection').findOneAndUpdate({ text: 'eat lunch'}
+                                                                                            ,{
+                                                                                                  $set:{  completed:true    }
+                                                                                              }
+
+                      3.configurations
+                        ---for example: {returnOriginal: false}

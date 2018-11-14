@@ -8,3 +8,10 @@
 7. git remote add origin git@github.com:milijanaboskovic/name_of_repo
 8. git push -u origin master
 9. check in profile online
+
+=>every next time:
+
+1. git status
+2. git add .
+3. git commit -m "sdaasd"
+4. git push

@@ -59,7 +59,7 @@ ObjectId
                                                              => this ObjectID let us make new objectIDs on the fly, we can do whatever we like with them
 => then we can make new ObjectID : var obj= new ObjectID();
 ------------------------------------------------------------------------------------------------
-Fetching data from database
+FETCHING data from database
 ------------------------------------------------------------------------------------------------
 * fetching data->   db.collection(collection_name).find()
       => by default we can call this function with no arguments->in that case we will fetch all todo
@@ -83,3 +83,25 @@ Fetching data from database
       });
 * we can pass query to find function: find({property: 'some_value'})
 * how we can query by id:find({ _id: new ObjectID('4534654')  }) -->object id is not property is an ObjectID
+
+------------------------------------------------------------------------------------------------
+DELETE data from database
+------------------------------------------------------------------------------------------------
+1. deleteMany : delete docs which satisfy query inside of deleteMany
+                => db.collection('collection_name').deleteMany(query).then((result)=>{}...)....
+                => if we print result we will get huge output, what is matters is first line,
+                ---for Example: {result:{ok:1, n:3}} which means: ok=1 things did go as expected
+                                                                  n:3  n-number of records were deleted
+2. deleteOne:  works the same as deleteMany but deletes only the first doc which satisfy query and then stops
+3. findOneAndDelete: works the same as deleteOne but it returns deleted doc
+                    => this means we can print it
+                    ---forExample: {
+                                      lastErrorObject: { n: 1 },
+                                        value:
+                                              { _id:
+                                                ObjectID {
+                                                  _bsontype: 'ObjectID',
+                                                  id: <Buffer 5b ec 14 19 fd e8 d1 0d 48 f4 64 d3> },
+                                                text: 'Something to do',
+                                                completed: false },
+                                        ok: 1 }

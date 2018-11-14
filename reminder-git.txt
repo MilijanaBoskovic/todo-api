@@ -1,0 +1,10 @@
+//upload to git
+1. navigate to project folder
+2. git init ->git status to see untracked files
+3. to ignore modules in root of project make file: .gitignore: in that file write names of Files
+4. git add .
+5. git commit -m 'Initial commit'
+6. log online, make new repo
+7. git remote add origin git@github.com:milijanaboskovic/name_of_repo
+8. git push -u origin master
+9. check in profile online

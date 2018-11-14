@@ -1,0 +1,85 @@
+CONNECTING APP TO MongoDB database
+--------------------------------------------------------------------------------------------------------------------------------------
+
+//starting up mongo server
+1) cd \
+2) navigate to \Program Files\MongoDB\Server\4.0\bin
+3) mongod.exe --dbpath /Users/inquiry/mongo-data --->where mongo-data is directory for database
+
+----------------------------------------------------------------------------------------------------------------------------------------
+APP which will comunicate with mongo
+----------------------------------------------------------------------------------------------------------------------------------------
+* npm install mongodb@2.2.5 --save
+
+1) first we need to do is pull something out of mongod library-->mongo client- which can comunicate with mongo Server
+    const MongoClient=require('mongodb').MongoClient;
+2) after this we can call clients function connect to connect to database: MongoClient.connect();
+   => this function takes two arguments:
+      1) url where our database live
+      ---for example: 'mongodb://localhost:27017/TodoApp' ->when we connect to mongodb database we want to use mongodb protocol like this
+                                                          ->TodoApp is name of database
+                                                            *you dont need to create database before you start using it, actually adding data into it
+
+      2) callback function which will fired after connection whether succeded or failed
+      ---for example: (err,db)=>{}
+                      =>err- which may or may not exist->It will exist if error actually happen
+                      =>db -db object - this we can use to issue commands to read and write data
+
+3) we need to close connection to MongoDB server: db.close();
+4) robo =>connect to local database
+5) adding data->inserting record in collection
+  *  db.collection(collection_name).insertOne--> this will create it, the same rule as for database
+                                             --> insertOne -inserting new document into your collection
+                                                          =>it takes two arguments:
+                                                            1) object- wich will store various key-value pairs
+                                                            2) callback function- will get fired when things whether faild or go well
+                                                              (err,result)=>{} --> result- will be provided if things go well
+                                                                               --> result.ops- the ops atribute will store all of docs that are inserted
+
+------------------------------------------------------------------------------------------------
+ObjectId
+------------------------------------------------------------------------------------------------
+* _id property- added by Mongo, it dont use some increment method for this
+              => it is designed to scale out -meaning adding on more database servers to handle extra load
+              => when we use randomly generated id we dont need to constantly comunicate with other database servers to check what is higest incremental value is
+              => object id is made up couple different things: =>it is 12 byte value
+                                                              =>first 4B are time stamp (moment in time when id is created)
+                                                              =>next 3B are machine identifier
+                                                              =>next 2B are process id
+                                                              =>last 3B are counter->similar to mySQL
+              * we can specify id if we want,but by default it is generated as ObjectId by mongo
+              * we can pull out the timestamp,but only if we use default option: result.ops[0]._id.getTimestamp()
+
+* object destructuring:
+*lets you pull out properties from an object creating variables
+---for example: var user={name:'Lola', age=22};
+                var {name}=user;
+=> we can change our require statement to use destructuring: const {MongoClient} =require('mongodb'); or
+                                                             const {MongoClient, ObjectID} =require('mongodb');
+                                                             => this ObjectID let us make new objectIDs on the fly, we can do whatever we like with them
+=> then we can make new ObjectID : var obj= new ObjectID();
+------------------------------------------------------------------------------------------------
+Fetching data from database
+------------------------------------------------------------------------------------------------
+* fetching data->   db.collection(collection_name).find()
+      => by default we can call this function with no arguments->in that case we will fetch all todo
+      => find returns a mongoDB cursor-->this is not actual documents, that is actually pointer to those documents
+      => that cursor have a lot of methods which we can use to get our documents
+      *cursor methods:
+                      => .toArray() - instead of having a cursor after this we have array of documents/objects
+                                    => this method returns a promise
+                                    => we can add then call with callbacks with argument docs and second with argument err
+                      => .count() -returns number of docs
+                                  =>can return promise and be used in the same way as toArray
+      ---for example:
+      db.collection('Todos').find().toArray().then((docs)=>
+      {
+        console.log('Todos:');
+        console.log(JSON.stringify(docs,undefined,2));
+      }
+      ,(err)=>
+      {
+        console.log('Unable to fetch todos: ',err);
+      });
+* we can pass query to find function: find({property: 'some_value'})
+* how we can query by id:find({ _id: new ObjectID('4534654')  }) -->object id is not property is an ObjectID

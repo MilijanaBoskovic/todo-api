@@ -1,0 +1,14 @@
+POSTMAN
+-----------------------------------------------------------------------------------------------------------------------------------------
+-esencial tool if you build REST API
+-lets you create HTTP requests and fire them of -> so it is easy to test do everything work as expected
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+INSTALATION AND USING
+----------------------------------------------------------------
+*getpostman.com
+=> app for your os
+=>skip logging in
+------------------------------------
+* example of request: GET http://google.com

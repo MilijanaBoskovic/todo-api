@@ -1,0 +1,53 @@
+*An API for a website is code that allows two software programs to communicate with each another.
+* The API spells out the proper way for a developer to write a program requesting services from an operating system or other application.
+*In a web service, the Web technology such as HTTP—originally designed for human-to-machine communication—is utilized for machine-to-machine communication,
+  more specifically for transferring machine-readable file formats such as XML and JSON.
+* RESTful web services allow the requesting systems to access and manipulate textual representations of web resources by using a uniform and predefined set of stateless operations.
+* In practice, a web service commonly provides an object-oriented web-based interface to a database server, utilized for example by another web server,
+  or by a mobile app, that provides a user interface to the end user.
+* "Web resources" were first defined on the World Wide Web as documents or files identified by their URLs. However, today they have a much more generic and abstract
+  definition that encompasses every thing or entity that can be identified, named, addressed, or handled, in any way whatsoever, on the web.
+* By using a stateless protocol and standard operations, RESTful systems aim for fast performance, reliability, and the ability to grow,
+  by re-using components that can be managed and updated without affecting the system as a whole, even while it is running.
+* In a RESTful web service, requests made to a resource's URI will elicit a response with a payload formatted in either HTML, XML, JSON, or some other format.
+  The response can confirm that some alteration has been made to the stored resource, and the response can provide hypertext links to other related resources
+  or collections of resources. When HTTP is used, as is most common, the operations available are GET, POST, PUT, DELETE, and other predefined CRUD HTTP methods.
+*A RESTful API use: => GET to retrieve a resource;
+                    => PUT to change the state of or update a resource, which can be an object, file or block;
+                    => POST to create that resource;
+                    => DELETE to remove it.
+
+
+
+CREATING HTTP POST REQUEST
+------------------------------------------------------------------------------------------------------------------------------------
+* we have made separate files for server, mongoose configuration and 2 files for models
+* in models files we dont need to include mongoose file that we made, we include library for mongoose
+
+* we need to install express: npm install express@4.14.0 body-parser@1.15.2  --save
+* body-parser module: => let us send JSON to server, server can than take that JSON and do something with it
+                    => practicly body-parser parses the body, it takes string body and turns it to js object
+*then we need to include these modules into server.js file
+=> after this we can make simple server with: var app= express();
+                                              app.listen(3000,()=>{ console.log('Server started on port 3000');});
+
+=>then we can start configuring our routes (POST)--> which will let us do CRUD operations
+                                                 => when you want to create resource you use post http method and you send that resource as a body
+                                                 => we will send JSON objects to server
+-url for REST api is realy important and must have proper structure => for creating resource '/name-of-collection'
+-for geting body data that got sent from the client =>we have to use a body-parser module
+                                                   => it is going to take JSON and convert it to an object ataching it on request object
+- we need to configure the middleware with app.use => which takes the middleware-lets you configure how your express app works
+                                                    =>if we write the custom middleware it will be a function
+                                                    =>if we are using 3rd party middleware we usualy just access something of a library
+                                                    =>app.use(bodyParser.json())
+                                                    => return value of json() method is function and that is the middleware we need to give to express
+                                                    =>now we can send json to our express aplication
+                                                    =>after that we can start server and test in postman
+                                                    =>POST localhost:3000/todos
+                                                    =>in order to send some data to application:=> body database
+                                                                                                => raw
+                                                                                                => JSON(aplication/json)
+                                                                                                =>then we write object in postman for sending
+                                                                                                ---for example:
+                                                                                                {  "text": "This is from postman" }

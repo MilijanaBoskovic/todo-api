@@ -24,10 +24,10 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp',(err,db)=>
   // });
 
   db.collection('Users').findOneAndUpdate(
-    {name: 'Goran'}
+    {name: 'Zoran'}
     ,{
-        $set:{  name: 'Zoran'    },
-        $inc: { age: 1    }    
+        $set:{  name: 'Pera'    },
+        $inc: { age: 1    }
 
      }
     ,{returnOriginal: false}

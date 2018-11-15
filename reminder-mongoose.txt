@@ -1,0 +1,87 @@
+
+MONGOOSE NPM LIBRARY
+--------------------------------------------------------------------------------------------------------------------------------------------
+* is orm standing for object relational mapping
+* mongoosejs.com/docs/guide.html
+* npm install mongoose@4.5.9 --save
+*steps for using: => after require we need to connect to database
+                  => mongose support callbacks by default but if we want to use promises we need to say what promise library we want to use
+                  => mongoose.promise=global.Promise;
+                  => mongoose.connect('mongodb://localhost:27017/TodoApp');
+                  => mongoose is maintaining this connection over time and it will wait to connection before tries to make a query
+                  => we dont need to manage the order things happen
+
+                  *inside of mongodb collections can store anything, mongoose keep things more organised
+                  =>create mongoose model for collection for mongoose to know how to store our data
+                  => var name = mongoose.model()--> returns function we will use for creating new model, it takes 2 arguments:
+                    1. string name
+                    2. schema-- will define various description of properties for a model
+                      => { property_name: { configuration for property },...}
+                      ---for example: var Todo= mongoose.model('Todo',
+                                                {
+                                                  text:{ type: String },
+                                                  completed:{ type: Boolean  },
+                                                  completedAt:{ type: Number  }
+                                                });
+                  *creating instances of model:
+                    var instance_of_model_name= new model_name(
+                    {
+                      text:'Cook dinner'
+                    });
+                  * this dont update database=> instance_of_model_name.save();
+                   => this returns promise
+
+---------------------------------------------------------------------
+VALIDATION
+---------------------------------------------------------------------
+*mongosejs.com/docs/validation.html
+
+-SCHEMA: Everything in Mongoose starts with a Schema. Each schema maps to a MongoDB collection and defines the shape of the documents within that collection.
+        => To use it we need to convert it into a Model we can work with: mongoose.model(modelName, schema):
+        => Instances of Models are documents. Documents have many of their own built-in instance methods.
+        => Each key in code below defines a property in our documents which will be cast to its associated SchemaType.
+---for example: we've defined a property text which will be cast to the String SchemaType.
+---for example: This is schema for Todo:
+                                        var Todo=mongoose.model('Todo',
+                                        {
+                                          text:{
+                                            type: String,
+                                            required:true,
+                                            minlength: 1,
+                                            trim: true
+                                        },
+                                          completed:{
+                                            type: Boolean,
+                                            default: false
+                                        },
+                                          completedAt:{
+                                            type: Number,
+                                            default: null
+                                        }
+                                      });
+
+-validation is defined in the SchemaType: => SchemaTypes handle definition of path defaults, validation, getters, setters, field selection defaults for queries,
+                                              and other general characteristics for Mongoose document properties.
+                                          => You can think of a Mongoose schema as the configuration object for a Mongoose model.
+                                             SchemaType is then a configuration object for an individual property.
+                                          => SchemaType says what type a given path should have, whether it has any getters/setters,
+                                             and what values are valid for that path.
+                                          => You can declare a schema type using the type directly, or an object with a type property.
+-                                         => SchemaType is different from a type ---> mongoose.ObjectId !== mongoose.Types.ObjectId. SchemaType is just a configuration object for Mongoose
+                                          => An instance of the mongoose.ObjectId SchemaType doesn't actually create MongoDB ObjectIds,
+                                            it is just a configuration for a path in a schema.
+
+-Validation is middleware: => Middleware (also called pre and post hooks) are functions which are passed control during execution of asynchronous functions.
+                              It is specified on the schema level. Mongoose has 4 types of middleware: document middleware, model middleware, aggregate middleware, and query middleware.
+                              1) Pre middleware functions are executed one after another, when each middleware calls next.
+                              2) Post middleware are executed after the hooked method and all of its pre middleware have completed.
+                            => Mongoose registers validation as a pre('save') hook on every schema by default.
+                            => You can manually run validation using doc.validate(callback) or doc.validateSync()
+                            => Validators are not run on undefined values. The only exception is the required validator.
+                            => Validation is asynchronously recursive; when you call Model#save, sub-document validation is executed as well.
+                                If an error occurs, your Model#save callback receives it
+
+                            =>Mongoose has several built-in validators:
+                              1) All SchemaTypes have the built-in required validator.
+                              2) Numbers have min and max validators.
+                              3) Strings have enum, match, minlength, and maxlength validators.

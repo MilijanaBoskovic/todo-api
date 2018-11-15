@@ -51,3 +51,64 @@ CREATING HTTP POST REQUEST
                                                                                                 =>then we write object in postman for sending
                                                                                                 ---for example:
                                                                                                 {  "text": "This is from postman" }
+TESTING
+---------------------------------------------------------------------------------------------------------------------------------------------
+*we need to install and include modules for testing: => npm i expect@1.20.2 mocha@3.0.2 nodemon@1.10.2 supertest@2.0.0 --save-dev
+                                                     => we have nodemon installed on global level but since we are using it inside of package.json script
+                                                        we installed it localy as well.
+*we need to set scripts in package.json: "test":"mocha server/**/*.test.js"  and "test-watch":"nodemon --exec 'npm test'"
+*we use test watch to every time we change app test rerun
+*we need to include expect and supertest module in our test file, there is no need to require mocha-that isnt way of usage for it
+*we need to require express app from server file: const {app}=require('./../server');
+*then we need to require model variable
+*creating async test: => it('should...',(done)=>{});
+                      => we have to specify done because we will make async test
+                      => inside of callback: => we are creating variable of property of model we will send and define some value for it
+                                             => var property= 'for example some string';
+                                             => now we will make request with supertest, and pass it a app we want to made request on
+                                             => request(app).post('/name_of_collection').send({property})
+                                             => send is method that we use for sending the data along with request
+                                             =>we are passing object to it which will be converted to JSON by supertest so we dont need to worry about that
+                                             =>now when we sent request we can start making assertions about the request
+                                             =>expect(200)
+                                             =>now we can make assertion about body that comes back:
+                                             =>we will make custom expect assertion: these calls do get passed the response and we can use that response
+                                              inside of an function
+                                              =>inside of that function we will expect that response.body.property_name has that property and then some
+                                                expect method for assertions about property
+                                              ---for example: expect((res)=>
+                                                                {
+                                                                  expect(res.body.text).toBe(text);
+                                                                });
+                                             => we want to check what is actually stored in mongodb collection: this is reason we loaded  models
+                                             => instead passing done to end() statement on the end, we will pass function to it
+                                             =>this callback function would get called with an error and the response as arguments
+                                             =>it will alows to us to do a few things:
+                                                1) handling error that might occur above
+                                                 ---for example:     end((err,res)=>
+                                                                        {
+                                                                          if(err)
+                                                                          {
+                                                                            return done(err);
+                                                                          }
+                                                                        })
+                                                    =>this is going to wrap up a test printing the error to the scren so test will fail
+                                                2) we will make request to the db fetching all todos verifying that our new todo is indead added:
+                                                ---for example:  Todo.find()
+                                                  we can attach then callback to it, we will call this function with all todos and we can make some assertions about that
+                                                  in this example we try to see that our todo exists
+                                                ---for example:  Todo.find().then((todos)=>{
+                                                                                    expect(todos.lenght).toBe(1);
+                                                                                    expect(todos[0].text).toBe(text);
+                                                                                    done();
+                                                                                    })
+                                                                              .catch((e)=>{done(e);});
+
+                                              =>on the end we will add testing life cycle method beforeEach which will alow to us to run it before any test case
+                                              => it takes function as argument which will have done as argument
+                                              =>we have to write it above test cases and we use it to make database useful
+                                              ---for example: we want to clear database and we pass empty object to remove
+                                                                                        beforeEach((done)=>
+                                                                                        {
+                                                                                          Todo.remove({}).then(()=>done());
+                                                                                        });

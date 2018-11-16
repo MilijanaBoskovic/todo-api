@@ -131,7 +131,7 @@ GETTING AN INDIVIDUAL RESOURCE- CREATING API ROUTE
 ---------------------------------------------------------------------------------------------------------------------------------------------
 *first we need to make a part of url dynamic=>url parameter
                                             =>pattern: :name
-                                            => this is going to create name variable,it is going to be onrequest object and we are going to be able to access it
+                                            => this is going to create name variable,it is going to be on request object and we are going to be able to access it
                                             ---for example: app.get('/todos/:id',(req,res)=>{ *   });
                                             =>when someone make this request this callback will fire and inside of it we will be able to query by id
                                             =>request.params => it is going to be an object which will have key-value pairs where key is url parameter
@@ -141,8 +141,8 @@ TESTING GET /todos/:id
 => then we can pass that id to url like: request(app).get(`/todos/${todos[0]._id.toHexString()}`)
 => we have to convert it to string because ObjectID object is not what we want to pass to url
 
-DEPLOYING TO HEROKU
---------------------------
+DEPLOYING TO HEROKU-NEED TO PAY :(
+----------------------------------
 *we need to set up real MongoDB database because we currently use mongodb://localhost
 *in server we need to create PORT variable-it will be set if the app is running on heroku and not if is running localy: const port=process.env.PORT || 3000;
 *in package.json: 1) we need to tell heroku how to start a project: => in scripts we make "start" script
@@ -168,3 +168,65 @@ DEPLOYING TO HEROKU
                                                                    => git status...
                                                                    =>git push heroku master
                                                                    =>heroku open
+---------------------------------------------------------------------------------------------------------------------------------------------
+DELETE A resource from database using mongoose
+----------------------------------------------------------------------------------------------------------------------------------------
+*mongoose give us 3 methods for deleting our records:
+1. model.remove({query})- for deleting multiple records
+ *diference from find except the obvious is that you cant pass nothing and expect that all documents will get removed
+  instead you need to run it like this model.remove({})
+2. model.findOneAndRemove()- it will  return removed document
+3.model.findByIdAndRemove()- also returns removed document, have a success case if dont find id, only that it returns null for a value for returned doc
+
+*we need to set up the route in server.js let us delete todo:=> app.delete(url,(req,res)=>[}]);
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+PATCH -update the resource using mongoose
+----------------------------------------------------------------------------------------------------------------------------------------
+* install lodash: npm i --save lodash@4.15.0 and include it to server file
+* _.pick()- takes a object, and takes array of properties you want to pull off object and add it to body and if they exists
+          -->we should put here stuff that user should be able to update
+---for example: var body = _.pick(req.body,['text','completed'])
+
+*complex part is when we need to use some property value and using that value to set another property
+*findByIdAndUpdate- takes two arguments: 1)id
+                                         2)setting values on the object->have to use mongodb operators
+                                         3) options to pick how the function works
+---for example:
+                Todo.findByIdAndUpdate(id,{$set: body},{new: true}).then((... ---> where new:true means that the function will return updated document
+
+---sending request from postman: update ....todos\432534 =>Body---raw---json=>and then write changes that we want
+
+-example of PATCH test:
+it('should update the todo',(done)=>
+{
+  var id=todos[1]._id.toHexString();
+  var text='This should be the new text';
+
+  request(app).patch(`/todos/${id}`)
+  .send({                               //we need to call send also,and send data that we want to update
+       completed:true,
+      text:text
+  })
+  .expect(200)
+  .expect((res)=>
+  {
+    expect(res.body.todo.text).toBe(text);
+    expect(res.body.todo.completed).toBe(true);
+    expect(res.body.todo.completedAt).toBeA('number');
+  })
+  .end(done);
+
+});
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+*when we do
+end((err,res)=>{
+  if(err)
+  {
+    return done(err);
+  }
+});
+error is passed to done function to be handled by mocha
+
+
+*when you want to remove value from database you can simply set it to null

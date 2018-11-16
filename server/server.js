@@ -10,6 +10,9 @@ var {User} =require('./models/user.js');
 var app= express();
 
 app.use(bodyParser.json());
+const port=process.env.PORT || 3000;
+
+
 app.post('/todos',(req,res)=>
 {
   console.log(req.body);
@@ -40,7 +43,7 @@ app.get('/todos/:id',(req,res)=>
       return res.status(404).send();
     }
 
-    res.status(200).send({todo});
+    res.status(200).send({todo});//without parenthis we cant use in testing todo.text
     done();
   }).catch((e)=>
   {
@@ -49,8 +52,8 @@ app.get('/todos/:id',(req,res)=>
 
 });
 
-app.listen(3000,()=>{
-  console.log('Server started on port 3000');
+app.listen(port,()=>{
+  console.log(`Server started on port ${port}`);
 });
 
 module.exports={app};

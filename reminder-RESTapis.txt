@@ -140,3 +140,14 @@ TESTING GET /todos/:id
 *we are passing array of documents to database with ids made by new ObjectId : const todos=[ { _id: new ObjectID(),text: 'First test todo' },...
 => then we can pass that id to url like: request(app).get(`/todos/${todos[0]._id.toHexString()}`)
 => we have to convert it to string because ObjectID object is not what we want to pass to url
+
+DEPLOYING TO HEROKU
+--------------------------
+*we need to set up real MongoDB database because we currently use mongodb://localhost
+*in server we need to create PORT variable-it will be set if the app is running on heroku and not if is running localy: const port=process.env.PORT || 3000;
+*in package.json: 1) we need to tell heroku how to start a project: => in scripts we make "start" script
+                                                                    =>"start":"node server/server.js"
+                  2) tell heroku which version of node we want to use: => we run node -v to see which version we use
+                                                                       => we are setting "engines" property which let us specify various versions for things
+                                                                          heroku let us configure
+                                                                       =>"node": "11.1.0"

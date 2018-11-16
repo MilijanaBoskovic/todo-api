@@ -151,3 +151,20 @@ DEPLOYING TO HEROKU
                                                                        => we are setting "engines" property which let us specify various versions for things
                                                                           heroku let us configure
                                                                        =>"node": "11.1.0"
+*we need to set up a database=> we will do this with heroku add-on:=> heroku website
+                                                                   => if we click on any of our apps we see dashboard and installed add-ons section
+                                                                   =>configure our add-ons
+                                                                   =>mLab MongoDB- this is a MongoDB database service and it will let us integrate mongodb into heroku app
+                                                                   =>in terminal we will create new heroku app: heroku create
+                                                                   =>after that we need to tell the app that we want to use mLab
+                                                                   =>heroku addons:create mongolab:sandbox
+                                                                     *sandbox is free plan
+                                                                   =>heroku config -you get a list of all configuration variables for your heroku app
+                                                                   =>after that we should have MONGODB_URI which is a database url that mLab gave us
+                                                                   =>this is on process.env when app runs on heroku
+                                                                   =>inside of mongoose.js file in our call to connect we can check in connect does it exists
+                                                                   =>if does we will use it if it doesnt we will use localhost
+                                                                   =>mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/TodoApp');
+                                                                   => git status...
+                                                                   =>git push heroku master
+                                                                   =>heroku open

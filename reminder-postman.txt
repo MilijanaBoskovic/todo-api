@@ -12,3 +12,7 @@ INSTALATION AND USING
 =>skip logging in
 ------------------------------------
 * example of request: GET http://google.com
+
+*we can collection of routes so we can refire requests without having to manualy enter every time
+=> drop down arrow next to save=>save as
+=>we can find that in our collections

@@ -104,7 +104,8 @@ TESTING
                                                                                     })
                                                                               .catch((e)=>{done(e);});
 
-                                              =>on the end we will add testing life cycle method beforeEach which will alow to us to run it before any test case
+                                              =>on the end we will add testing life cycle method beforeEach which will alow to us to run it before every describe block
+                                              =>if you want something to be called before oters you should use before
                                               => it takes function as argument which will have done as argument
                                               =>we have to write it above test cases and we use it to make database useful
                                               ---for example: we want to clear database and we pass empty object to remove
@@ -112,3 +113,30 @@ TESTING
                                                                                         {
                                                                                           Todo.remove({}).then(()=>done());
                                                                                         });
+ADDITIONAL ON MONGOOSE QUERY-ing
+---------------------------------------------------------------------------------------------------------------------------------------------
+HOW TO VALIDATE OBJECT IDs
+-----------------------------------
+*when we are passing the query to find function and want to find document by id, we can pass string
+ mongoose will convert it to ObjectId for us before makes search : find({ _id: id }) where id is our string variable
+
+*findOne method is similar to find but it will always return one document only instead of array, it will grabs first one that matches the query
+*findById- recomended method
+
+*for all of this methods if there is no such docs, there will not occur any error, for find we will get empty array back and in case of other two methods null
+*for example error will occur if id is longer than it should be =>cast error
+=>to handle this we can include ObjectID :const {ObjectID}=require('mongodb'); and use its function isValid=> if(!ObjectID.isValid(idTodo))
+
+GETTING AN INDIVIDUAL RESOURCE- CREATING API ROUTE
+---------------------------------------------------------------------------------------------------------------------------------------------
+*first we need to make a part of url dynamic=>url parameter
+                                            =>pattern: :name
+                                            => this is going to create name variable,it is going to be onrequest object and we are going to be able to access it
+                                            ---for example: app.get('/todos/:id',(req,res)=>{ *   });
+                                            =>when someone make this request this callback will fire and inside of it we will be able to query by id
+                                            =>request.params => it is going to be an object which will have key-value pairs where key is url parameter
+TESTING GET /todos/:id
+-----------------------------
+*we are passing array of documents to database with ids made by new ObjectId : const todos=[ { _id: new ObjectID(),text: 'First test todo' },...
+=> then we can pass that id to url like: request(app).get(`/todos/${todos[0]._id.toHexString()}`)
+=> we have to convert it to string because ObjectID object is not what we want to pass to url
